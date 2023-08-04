@@ -8,6 +8,13 @@ open Avalonia.Android
 
 open Library
 
+module Env =
+  // customize initialization if needed
+  let Android = ApplicationEnvironmentImpl()
+
+type AndroidApp() =
+  inherit SharedApplication(Env.Android)
+
 [<Activity(Label = "Project.Android",
            Theme = "@style/MyTheme.NoActionBar",
            Icon = "@drawable/icon",
@@ -17,7 +24,7 @@ open Library
               ||| ConfigChanges.ScreenSize
               ||| ConfigChanges.UiMode))>]
 type MainActivity() =
-  inherit AvaloniaMainActivity<App>()
+  inherit AvaloniaMainActivity<AndroidApp>()
 
   override _.CustomizeAppBuilder(builder) =
     base

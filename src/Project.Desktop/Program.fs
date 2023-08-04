@@ -11,7 +11,10 @@ module Program =
   [<CompiledName "BuildAvaloniaApp">]
   let buildAvaloniaApp () =
     AppBuilder
-      .Configure<App>()
+      .Configure<SharedApplication>(fun _ ->
+        // customize initialization if needed
+        SharedApplication(ApplicationEnvironmentImpl())
+      )
       .UsePlatformDetect()
       .WithInterFont()
       .LogToTrace(areas = Array.empty)
