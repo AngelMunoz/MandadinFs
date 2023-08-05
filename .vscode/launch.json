@@ -5,9 +5,26 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Attach",
+      "name": "Attach to running project",
       "type": "coreclr",
       "request": "attach"
+    },
+    {
+      "name": "Launch browser project",
+      "type": "blazorwasm",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/src/Project.Browser"
+    },
+    {
+      "name": "Launch Desktop project",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build: Project.Desktop.fsproj",
+      "program": "${workspaceFolder}/src/Project.Desktop/bin/Debug/net7.0/Project.Desktop.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Project.Desktop",
+      "stopAtEntry": false,
+      "console": "internalConsole"
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build: Project.Desktop.fsproj",
+      "type": "shell",
+      "group": "build",
+      "command": "dotnet build src/Project.Desktop",
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    }
+  ]
+}
