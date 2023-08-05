@@ -14,10 +14,10 @@ open NXUI.FSharp.Extensions
 
 module UI =
 
-  let FedNotesPage (page: int, limit: int) =
+  let FedNotesPage (page: int, limit: int) : Control =
     StackPanel()
       .children(TextBlock().text("Fediverse Notes"))
 
-  let FedNotePage (note: string) =
+  let FedNotePage (note: string) : Control =
     StackPanel()
       .children(TextBlock().text("Fediverse note"))

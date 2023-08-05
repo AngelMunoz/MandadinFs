@@ -12,19 +12,24 @@ open NXUI.FSharp.Extensions
 
 open FSharp.Control.Reactive
 
-open Router
+open Library.Router
+open Library.Services
+open Library.Services.Todos
 
 
 type ApplicationEnvironment =
   abstract Router: Router
+  abstract Todos: TodoService
 
 
 
-type ApplicationEnvironmentImpl(?router: Router) =
+type ApplicationEnvironmentImpl(?router: Router, ?todos: TodoService) =
   let router = defaultArg router (Router.Default Page.Todos)
+  let todos = defaultArg todos (Todos.Default())
 
   interface ApplicationEnvironment with
     member _.Router = router
+    member _.Todos = todos
 
 module private Shell =
   open Library.FsFediverse
@@ -44,7 +49,7 @@ module private Shell =
 #endif
       |> Observable.map(fun page ->
         match page with
-        | Page.Todos -> UI.TodosPage()
+        | Page.Todos -> UI.TodosPage(appEnv.Todos)
         | Page.FsNotes(page, limit) -> UI.FedNotesPage(page, limit)
         | Page.FsNote note -> UI.FedNotePage(note)
       )

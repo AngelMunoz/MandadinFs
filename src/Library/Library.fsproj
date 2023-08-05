@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="Extensions.fs" />
     <Compile Include="Router.fs" />
+    <Compile Include="Services.fs" />
     <Compile Include="FsFediverse.fs" />
     <Compile Include="Todos.fs" />
     <Compile Include="Library.fs" />

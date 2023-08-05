@@ -1,7 +1,6 @@
 module Library.Router
 
 open System
-open System.Reactive.Subjects
 open System.Collections.Generic
 
 open FSharp.Control.Reactive
@@ -33,7 +32,7 @@ module Router =
 
   let Default (initialPage: Page) =
     let stack = Stack<Page> [ initialPage ]
-    let routerFeed = new BehaviorSubject<Page>(stack.Peek())
+    let routerFeed = Subject.behavior(stack.Peek())
 
     { new Router with
         member _.CurrentSnapshot = routerFeed.Value
