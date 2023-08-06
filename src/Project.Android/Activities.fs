@@ -10,7 +10,7 @@ open Library
 
 module Env =
   // customize initialization if needed
-  let Android = ApplicationEnvironmentImpl()
+  let Android = ApplicationEnvironmentImpl("")
 
 type AndroidApp() =
   inherit SharedApplication(Env.Android)

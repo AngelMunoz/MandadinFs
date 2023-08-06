@@ -13,6 +13,7 @@ open Avalonia.Input
 open Avalonia.Layout
 open Avalonia.Media
 
+open Library.Types
 open Library.Services.Todos
 
 module UI =

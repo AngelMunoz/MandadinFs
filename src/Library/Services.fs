@@ -1,18 +1,14 @@
 namespace Library.Services
 
 open System
-open FSharp.Control.Reactive
 open System.Reactive.Subjects
+
+open FSharp.Control.Reactive
+open Thoth.Json.Net
+open Library.Types
 
 
 module Todos =
-  [<Struct>]
-  type Todo = {
-    Id: Guid
-    Title: string
-    Completed: bool
-  }
-
   type TodoService =
 
     abstract TodosSnapshot: Todo list
@@ -93,4 +89,46 @@ module Todos =
 
             true
           | None -> false
+    }
+
+
+module Fediverse =
+  open IcedTasks
+  open FsHttp
+
+  type FediverseNotesService =
+    abstract member find:
+      ?page: int * ?limit: int -> ColdTask<Result<MkNote list, string>>
+
+    abstract member findOne: note: string -> ColdTask<Result<MkNote, string>>
+
+  let Default (baseUrl: string) =
+
+    { new FediverseNotesService with
+        member _.find(?page: int, ?limit: int) = coldTask {
+          let page = defaultArg page 1
+          let limit = defaultArg limit 10
+
+          let req = http {
+            GET baseUrl
+            query [ "page", page; "limit", limit ]
+          }
+
+          let! response = req |> Request.sendAsync
+          let! response = response |> Response.toTextAsync
+
+          return Decode.fromString (Decode.list MkNote.Decoder) response
+        }
+
+        member _.findOne(note: string) = coldTask {
+          let req = http {
+            GET baseUrl
+            query [ ("note", note) ]
+          }
+
+          let! response = req |> Request.sendAsync
+          let! response = response |> Response.toTextAsync
+
+          return Decode.fromString MkNote.Decoder response
+        }
     }

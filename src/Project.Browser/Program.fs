@@ -14,7 +14,7 @@ module Program =
   let buildAvaloniaApp () =
     AppBuilder.Configure<SharedApplication>(fun () ->
       // customize initialization if needed
-      SharedApplication(ApplicationEnvironmentImpl())
+      SharedApplication(ApplicationEnvironmentImpl(""))
     )
 
   [<EntryPoint>]

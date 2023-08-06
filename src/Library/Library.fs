@@ -15,27 +15,54 @@ open FSharp.Control.Reactive
 open Library.Router
 open Library.Services
 open Library.Services.Todos
+open Library.Services.Fediverse
+open Library.FsFediverse.ViewModel
 
 
 type ApplicationEnvironment =
   abstract Router: Router
   abstract Todos: TodoService
+  abstract FsNotes: FediverseNotesService
+
+type PersistentViewModels =
+  abstract FsNotes: FediverseNotesViewModel
 
 
-
-type ApplicationEnvironmentImpl(?router: Router, ?todos: TodoService) =
+type ApplicationEnvironmentImpl
+  (
+    baseUrl: string,
+    ?router: Router,
+    ?todos: TodoService,
+    ?fsNotes: FediverseNotesService
+  ) =
   let router = defaultArg router (Router.Default Page.Todos)
   let todos = defaultArg todos (Todos.Default())
+  let fsNotes = defaultArg fsNotes (Fediverse.Default(baseUrl))
 
   interface ApplicationEnvironment with
     member _.Router = router
     member _.Todos = todos
 
+    member _.FsNotes = fsNotes
+
+  interface PersistentViewModels with
+    member _.FsNotes = new FediverseNotesVm(fsNotes)
+
+[<AutoOpen>]
+module AppEnvPatterns =
+  let inline (|AppEnv|) (appEnv: #ApplicationEnvironment) =
+    AppEnv(appEnv :> ApplicationEnvironment)
+
+  let inline (|PersistentVm|) (appEnv: #PersistentViewModels) =
+    PersistentVm(appEnv :> PersistentViewModels)
+
+
+
 module private Shell =
   open Library.FsFediverse
   open Library.Todos
 
-  let Content (appEnv: ApplicationEnvironment) : Control =
+  let Content (AppEnv appEnv & PersistentVm persistentVms) : Control =
 
     let content =
       appEnv.Router.CurrentPage
@@ -49,7 +76,7 @@ module private Shell =
       |> Observable.map(fun page ->
         match page with
         | Page.Todos -> UI.TodosPage(appEnv.Todos)
-        | Page.FsNotes(page, limit) -> UI.FedNotesPage(page, limit)
+        | Page.FsNotes(page, limit) -> UI.FedNotesPage(persistentVms.FsNotes)
         | Page.FsNote note -> UI.FedNotePage(note)
       )
 
@@ -78,7 +105,7 @@ module private Shell =
           .content(content.ToBinding(), mode = BindingMode.OneWay)
       )
 
-type SharedApplication(appEnv: ApplicationEnvironment) =
+type SharedApplication(appEnv: ApplicationEnvironmentImpl) =
   inherit Application()
 
   override this.Initialize() =

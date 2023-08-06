@@ -9,7 +9,7 @@ open Library
 
 module Env =
   // customize initialization if needed
-  let iOS = ApplicationEnvironmentImpl()
+  let iOS = ApplicationEnvironmentImpl("")
 
 type iOSApp() =
   inherit SharedApplication(Env.iOS)
