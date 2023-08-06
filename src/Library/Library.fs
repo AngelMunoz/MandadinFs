@@ -34,7 +34,6 @@ type ApplicationEnvironmentImpl(?router: Router, ?todos: TodoService) =
 module private Shell =
   open Library.FsFediverse
   open Library.Todos
-  open Avalonia.Threading
 
   let Content (appEnv: ApplicationEnvironment) : Control =
 
@@ -54,33 +53,29 @@ module private Shell =
         | Page.FsNote note -> UI.FedNotePage(note)
       )
 
-    StackPanel()
-      .spacing(4.)
+    DockPanel()
+      .lastChildFill(true)
       .children(
         StackPanel()
+          .DockTop()
+          .margin(8, 4)
           .orientation(Layout.Orientation.Horizontal)
           .spacing(4.)
           .children(
             Button()
               .content("Todos")
-              .OnClickHandler(fun _ _ ->
-                Dispatcher.UIThread.Post(fun _ ->
-                  appEnv.Router.Navigate(Page.Todos)
-                )
-              ),
+              .OnClickHandler(fun _ _ -> appEnv.Router.Navigate(Page.Todos)),
             Button()
               .content("FsNotes")
               .OnClickHandler(fun _ _ ->
-                Dispatcher.UIThread.Post(fun _ ->
-                  appEnv.Router.Navigate(Page.FsNotes(1, 10))
-                )
+                appEnv.Router.Navigate(Page.FsNotes(1, 10))
               )
           ),
-
-        UserControl()
-          .name("MainContent")
-          .content(content.ToBinding())
-      // possible footer
+        // possible footer as .DockBottom()
+        ContentControl()
+          .margin(8, 4)
+          .AlignHorizontalCenterWithPanel(true)
+          .content(content.ToBinding(), mode = BindingMode.OneWay)
       )
 
 type SharedApplication(appEnv: ApplicationEnvironment) =
@@ -88,7 +83,7 @@ type SharedApplication(appEnv: ApplicationEnvironment) =
 
   override this.Initialize() =
     this.Styles.Add(FluentTheme())
-    this.RequestedThemeVariant <- Styling.ThemeVariant.Dark
+    this.RequestedThemeVariant <- Styling.ThemeVariant.Default
 
   override this.OnFrameworkInitializationCompleted() =
     match this.ApplicationLifetime with
@@ -96,8 +91,8 @@ type SharedApplication(appEnv: ApplicationEnvironment) =
       let window =
         Window()
           .title("Mandadin F#")
-          .width(428)
-          .height(428)
+          .minWidth(320)
+          .minHeight(428)
           .content(Shell.Content appEnv)
 
       desktopLifetime.MainWindow <- window
