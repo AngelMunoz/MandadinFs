@@ -1,5 +1,6 @@
 namespace Library
 
+open System
 open Avalonia
 open Avalonia.Data
 open Avalonia.Controls
@@ -10,6 +11,7 @@ open NXUI
 open NXUI.Extensions
 open NXUI.FSharp.Extensions
 
+open Microsoft.Extensions.Configuration
 open FSharp.Control.Reactive
 
 open Library.Router
@@ -29,15 +31,29 @@ type PersistentViewModels =
 
 
 type ApplicationEnvironmentImpl
-  (
-    baseUrl: string,
-    ?router: Router,
-    ?todos: TodoService,
-    ?fsNotes: FediverseNotesService
-  ) =
+  (?router: Router, ?todos: TodoService, ?fsNotes: FediverseNotesService) =
+
+  let config =
+    let builder = ConfigurationBuilder()
+
+    for assetUri in AssetLoader.GetAssets(Uri("avares://Library/Assets")) do
+      let isAppSettings =
+        assetUri.OriginalString.Contains(
+          "appsettings",
+          StringComparison.InvariantCultureIgnoreCase
+        )
+
+      if isAppSettings then
+        builder.AddJsonStream(AssetLoader.Open(assetUri)) |> ignore
+
+    builder.Build()
+
   let router = defaultArg router (Router.Default Page.Todos)
   let todos = defaultArg todos (Todos.Default())
-  let fsNotes = defaultArg fsNotes (Fediverse.Default(baseUrl))
+
+  let fsNotes =
+    let server = config.GetRequiredSection("Project:SERVER_URL")
+    defaultArg fsNotes (Fediverse.Default(server.Value))
 
   interface ApplicationEnvironment with
     member _.Router = router
@@ -55,8 +71,6 @@ module AppEnvPatterns =
 
   let inline (|PersistentVm|) (appEnv: #PersistentViewModels) =
     PersistentVm(appEnv :> PersistentViewModels)
-
-
 
 module private Shell =
   open Library.FsFediverse
