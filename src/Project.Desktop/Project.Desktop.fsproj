@@ -21,9 +21,6 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
     <PackageReference Include="NXUI.Desktop" Version="$(NXUIVersion)" />
-
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MsExtensionsConfigVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MsExtensionsConfigVersion)" />
   </ItemGroup>
 
   <ItemGroup>

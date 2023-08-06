@@ -11,25 +11,8 @@ open Library
 
 module Env =
 
-  let Environment =
-    match Environment.GetEnvironmentVariable("MANDADIN_ENVIRONMENT") with
-    | null -> ".Production"
-    | value -> $".{value}"
-
-  let configuration =
-    ConfigurationBuilder()
-      .AddJsonFile("appsettings.json", optional = true, reloadOnChange = true)
-      .AddJsonFile(
-        $"appsettings{Environment}.json",
-        optional = true,
-        reloadOnChange = true
-      )
-      .Build()
-
   // customize initialization if needed
-  let iOS =
-    let project = configuration.GetRequiredSection("Project:SERVER_URL")
-    ApplicationEnvironmentImpl(project.Value)
+  let iOS = ApplicationEnvironmentImpl()
 
 type iOSApp() =
   inherit SharedApplication(Env.iOS)

@@ -20,8 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MsExtensionsConfigVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MsExtensionsConfigVersion)" />
   </ItemGroup>
 
   <ItemGroup>
