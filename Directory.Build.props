@@ -2,5 +2,6 @@
   <PropertyGroup>
     <AvaloniaVersion>11.0.2</AvaloniaVersion>
     <NXUIVersion>11.0.0</NXUIVersion>
+    <MsExtensionsConfigVersion>7.0.0</MsExtensionsConfigVersion>
   </PropertyGroup>
 </Project>

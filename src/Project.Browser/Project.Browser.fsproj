@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MsExtensionsConfigVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MsExtensionsConfigVersion)" />
   </ItemGroup>
 
   <ItemGroup>

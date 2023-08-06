@@ -13,9 +13,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
-    <ProjectReference Include="..\Library\Library.fsproj" />
     <Compile Include="AppDelegate.fs"/>
     <Compile Include="Main.fs"/>
+    <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MsExtensionsConfigVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MsExtensionsConfigVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Library\Library.fsproj" />
   </ItemGroup>
 </Project>
