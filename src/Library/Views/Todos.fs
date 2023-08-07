@@ -1,4 +1,4 @@
-namespace Library.Todos
+namespace Library.Views
 
 open System
 open System.Reactive.Subjects
@@ -14,10 +14,9 @@ open Avalonia.Layout
 open Avalonia.Media
 
 open Library.Types
-open Library.Services.Todos
+open Library.ViewModels
 
-module UI =
-
+module Todos =
   let TodoForm onAddTodo =
     let textbox =
       TextBox()
@@ -100,7 +99,7 @@ module UI =
       )
 
 
-  let TodosPage (todos: #TodoService) : Control =
+  let TodosPage (todos: #TodoPageViewModel) : Control =
 
     DockPanel()
       .lastChildFill(true)

@@ -11,70 +11,12 @@ open NXUI
 open NXUI.Extensions
 open NXUI.FSharp.Extensions
 
-open Microsoft.Extensions.Configuration
 open FSharp.Control.Reactive
 
 open Library.Router
-open Library.Services
-open Library.Services.Todos
-open Library.Services.Fediverse
-open Library.FsFediverse.ViewModel
-
-
-type ApplicationEnvironment =
-  abstract Router: Router
-  abstract Todos: TodoService
-  abstract FsNotes: FediverseNotesService
-
-type PersistentViewModels =
-  abstract FsNotes: FediverseNotesViewModel
-
-
-type ApplicationEnvironmentImpl
-  (?router: Router, ?todos: TodoService, ?fsNotes: FediverseNotesService) =
-
-  let config =
-    let builder = ConfigurationBuilder()
-
-    for assetUri in AssetLoader.GetAssets(Uri("avares://Library/Assets")) do
-      let isAppSettings =
-        assetUri.OriginalString.Contains(
-          "appsettings",
-          StringComparison.InvariantCultureIgnoreCase
-        )
-
-      if isAppSettings then
-        builder.AddJsonStream(AssetLoader.Open(assetUri)) |> ignore
-
-    builder.Build()
-
-  let router = defaultArg router (Router.Default Page.Todos)
-  let todos = defaultArg todos (Todos.Default())
-
-  let fsNotes =
-    let server = config.GetRequiredSection("Project:SERVER_URL")
-    defaultArg fsNotes (Fediverse.Default(server.Value))
-
-  interface ApplicationEnvironment with
-    member _.Router = router
-    member _.Todos = todos
-
-    member _.FsNotes = fsNotes
-
-  interface PersistentViewModels with
-    member _.FsNotes = new FediverseNotesVm(fsNotes)
-
-[<AutoOpen>]
-module AppEnvPatterns =
-  let inline (|AppEnv|) (appEnv: #ApplicationEnvironment) =
-    AppEnv(appEnv :> ApplicationEnvironment)
-
-  let inline (|PersistentVm|) (appEnv: #PersistentViewModels) =
-    PersistentVm(appEnv :> PersistentViewModels)
+open Library.Views
 
 module private Shell =
-  open Library.FsFediverse
-  open Library.Todos
 
   let Content (AppEnv appEnv & PersistentVm persistentVms) : Control =
 
@@ -89,9 +31,9 @@ module private Shell =
 #endif
       |> Observable.map(fun page ->
         match page with
-        | Page.Todos -> UI.TodosPage(appEnv.Todos)
-        | Page.FsNotes(page, limit) -> UI.FedNotesPage(persistentVms.FsNotes)
-        | Page.FsNote note -> UI.FedNotePage(note)
+        | Page.Todos -> Todos.TodosPage(persistentVms.TodosPage)
+        | Page.FsNotes -> Fediverse.FedNotesPage(persistentVms.FediversePage)
+        | Page.FsNote note -> Fediverse.FedNotePage(note)
       )
 
     DockPanel()
@@ -108,9 +50,7 @@ module private Shell =
               .OnClickHandler(fun _ _ -> appEnv.Router.Navigate(Page.Todos)),
             Button()
               .content("FsNotes")
-              .OnClickHandler(fun _ _ ->
-                appEnv.Router.Navigate(Page.FsNotes(1, 10))
-              )
+              .OnClickHandler(fun _ _ -> appEnv.Router.Navigate(Page.FsNotes))
           ),
         // possible footer as .DockBottom()
         ContentControl()

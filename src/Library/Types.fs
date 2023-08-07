@@ -10,7 +10,6 @@ type Todo = {
   Completed: bool
 }
 
-
 type MkInstance = {
   name: string
   softwareName: string

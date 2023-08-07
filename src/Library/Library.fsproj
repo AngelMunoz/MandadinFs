@@ -12,9 +12,13 @@
     <Compile Include="Extensions.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Router.fs" />
-    <Compile Include="Services.fs" />
-    <Compile Include="FsFediverse.fs" />
-    <Compile Include="Todos.fs" />
+    <Compile Include="Services/Todos.fs" />
+    <Compile Include="Services/Fediverse.fs" />
+    <Compile Include="ViewModels/Todos.fs" />
+    <Compile Include="ViewModels/Fediverse.fs" />
+    <Compile Include="Views/Todos.fs" />
+    <Compile Include="Views/Fediverse.fs" />
+    <Compile Include="Env.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -24,17 +28,13 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
-
     <PackageReference Include="NXUI" Version="$(NXUIVersion)" />
     <PackageReference Include="NXUI.FSharp" Version="$(NXUIVersion)" />
     <PackageReference Include="Markdown.Avalonia" Version="11.0.1" />
-
     <PackageReference Include="FSharp.Control.Reactive" Version="5.0.5" />
     <PackageReference Include="FsHttp" Version="11.0.0" />
     <PackageReference Include="IcedTasks" Version="0.8.0" />
     <PackageReference Include="Thoth.Json.Net" Version="11.0.0" />
-
-
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(MsExtensionsConfigVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MsExtensionsConfigVersion)" />
   </ItemGroup>

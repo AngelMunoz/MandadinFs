@@ -8,7 +8,7 @@ open FSharp.Control.Reactive
 [<Struct; RequireQualifiedAccess>]
 type Page =
   | Todos
-  | FsNotes of page: int * limit: int
+  | FsNotes
   | FsNote of note: string
 
 [<Struct; RequireQualifiedAccess>]
